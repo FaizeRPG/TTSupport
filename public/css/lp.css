@@ -3,7 +3,7 @@
 	src: url("/fonts/Megatron.otf");
 }
 body {
-    background-color: green; /*#00FF00;*/
+    background-color: black; /*#00FF00;*/
 }
 .life {
 	background-image: url(/img/life.png);

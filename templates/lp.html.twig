@@ -49,19 +49,48 @@
 			
 			<div class="row magtop">
 				<div class="col-md-3 center">
-					<input type="checkbox" id="autorefresh" data-toggle="toggle" data-on="Auto" data-off="Manuel" data-onstyle="info" data-offstyle="warning" data-width="100" data-height="75" />
+					<input type="checkbox" id="autorefresh" data-toggle="toggle"
+						data-on="Auto" data-off="Manuel"
+						data-onstyle="dark" data-offstyle="success" data-width="100" data-height="75" />
 				</div>
 				<div class="col-md-3 center">
-					<input type="checkbox" id="" data-toggle="toggle" data-on="None" data-off="None" data-onstyle="info" data-offstyle="warning" data-width="100" data-height="75" />
+					<input type="checkbox" id="backcolor" data-toggle="toggle"
+					data-on="Black" data-off="Green"
+					data-onstyle="dark" data-offstyle="success" data-width="100" data-height="75" />
 				</div>
 				<div class="col-md-3 center">
-					<input type="checkbox" id="" data-toggle="toggle" data-on="None" data-off="None" data-onstyle="info" data-offstyle="warning" data-width="100" data-height="75" />
+					<input type="checkbox" id="backgrnd" data-toggle="toggle"
+					data-on="Avec" data-off="Sans" data-onstyle="dark"
+					data-offstyle="success" data-width="100" data-height="75" />
 				</div>
 				<div class="col-md-3 center">
-					<input type="checkbox" id="" data-toggle="toggle" data-on="None" data-off="None" data-onstyle="info" data-offstyle="warning" data-width="100" data-height="75" />
+					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#yugiHelp">Aide ?</button>
 				</div>
 			</div>
 			
+		</div>
+			
+		<!-- Modal -->
+		<div class="modal fade" id="yugiHelp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Notice utilisation</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			  </div>
+			  <div class="modal-body">
+				Appuyer sur une touche du clavier vous mettra automatiquement en saisie dans le champ texte.<br/>
+				Celui-ci ne prend que des nombres avec signes: +/-<br/>
+				L'addition est par défaut, ainsi, vous devez toujours saisir le signe - pour soustraire un montant.
+				<ul>
+					<li>Espace: Force la mise à jour des informations</li>
+					<li>Entrée: Envoie la valeur sasie sur le dueliste actif</li>
+					<li>Entrée: Avec champ vide, divise les LP du dueliste actif par 2</li>
+					<li>Point: Pour changer de joueur actif</li>
+				</ul>
+			  </div>
+			</div>
+		  </div>
 		</div>
 	
 		<script>const ref = '{{ lp.ref }}';</script>

@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/clock.css') }}" />
+<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
+{% endblock %}
+
+{% block body %}
+<section class="h-100">
+  <section id="clock" class="row h-100">
+    <section id="playa" class="col">
+      <section class="my-3 pt-3">
+	<section id="TeamA" class="text-center">
+          <section class="h3">
+            {{ "Turn"|trans }}: <strong><span id="turnA">0</span></strong>
+          </section>
+	</section>
+      </section>
+
+      <section class="h-50 mx-auto">
+	<section class="row justify-content-around h-100">
+          <button class="col h1 text-center font-weight-bold h-100 bg-secondary border-0 rounded" disabled style="font-size:4em;" id="timerA">4:00.0</button>
+	</section>
+      </section>
+    </section>
+    
+    <section id="interruption" class="col-12">
+      <section class="row justify-content-around pb-3">
+	<input type="button" class="btn btn-success btn-lg col-2 font-weight-bold" value='{{ "GainTurn"|trans }}' id="gainTurn" disabled/>
+	<input type="button" class="btn btn-primary btn-lg col-3 font-weight-bold" value='{{ "Play"|trans }}' id="pause"/>
+	<input type="button" class="btn btn-danger btn-lg col-2 font-weight-bold" value='{{ "LoseTurn"|trans }}' id="loseTurn" disabled/>
+      </section>
+    </section>    
+
+    <section id="playb" class="col">
+      <section class="my-3 pt-3">
+	<section id="TeamB" class="text-center">
+	  <section class="h3">
+            {{ "Turn"|trans }}: <strong><span id="turnB">0</span></strong>
+	  </section>
+	</section>
+      </section>
+
+      <section class="h-50 mx-auto">
+	<section class="row justify-content-around h-100">
+	  <button class="col h1 text-center font-weight-bold h-100 bg-secondary border-0 rounded" disabled style="font-size:4em;" id="timerB">4:00.0</button>
+	</section>
+      </section>
+    </section>
+    
+  </section>
+</section>
+
+<section>
+  <audio>
+    <source src="../sounds/foghorn.mp3" type="audio/mpeg">
+  </audio>
+  <audio>
+    <source src="../sounds/boop.mp3" type="audio/mpeg">
+  </audio>
+  <audio>
+    <source src="../sounds/beep.mp3" type="audio/mpeg">
+  </audio>
+  
+  <span id="play" style="display:none">{{ "Play"|trans }}</span>
+  <span id="break" style="display:none">{{ "Break"|trans }}</span>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+<script src="js/game.js" type="text/javascript"></script>
+{% endblock %}

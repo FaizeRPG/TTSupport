@@ -1,0 +1,132 @@
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+{% block head_stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        .fadded { opacity: 0.4;}
+        .mblue {background-color: #cceeff;}
+        .mdark {background-color: #e6e6e6;}
+        .mgreen {background-color: #aaff80;}
+        .mpurple {background-color: #bf80ff;}
+        .myellow {background-color: #ffff4d;}
+        .mred {background-color: #ff4d4d;}
+        .dice {margin: 3px; padding: 8px;}
+    </style>
+{% endblock %}
+ 
+{% block main %}
+
+<button class='btn btn-primary' onclick='myMethod()'>Refresh</button>
+<button class='btn btn-danger' onclick='run()' id='runner'>Start</button>
+<br/><br/>
+<table style="width:100%">
+  {% for key, user in users %}
+  <tr id="{{ user.username }}" style="border: solid 10px white;">
+    <td style="width: 250px;">
+      <img src="{{ user.pic }}" style="max-width: 200px; max-height: 150px; display: block; margin-left: auto; margin-right: auto;" />
+    </td>
+    <td>
+        <h4>{{ user.playername }} ({{ user.username|capitalize }})</h4>
+        <div>Nb Roll: <span id="nbroll{{ user.id }}">{{ user.count }}</span></div>
+        <div>Result: </div>
+        <div id="result{{ user.id }}"></div>
+        <div>Dice: </div>
+        <div id="dice{{ user.id }}"></div>
+    </td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
+
+{% block body_javascript %}
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-62527606-2"></script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+   function gtag(){dataLayer.push(arguments);}
+   gtag('js', new Date());
+
+   gtag('config', 'UA-62527606-2');
+</script>
+
+
+<script type='text/javascript'>
+var runner = false;
+var users = [{% for key, user in users %}{{ user.id }},{% endfor %}];
+
+function run() {
+    if (runner == false) {
+        runner = setInterval(myMethod, 5000);
+        document.getElementById('runner').innerHTML = 'Stop';
+    } else {
+        clearInterval(runner);
+        runner = false;
+        document.getElementById('runner').innerHTML = 'Start';
+    }
+}
+
+function myMethod()
+{
+  for (a in users) {
+      var id = users[a];
+      var uri = '../api/result/'+id;
+
+      $.ajax({
+        type : 'GET',
+        dataType : 'JSON',
+        url : uri,
+        success : function(data) {
+            z = data['id'];
+            $('#nbroll'+z).html(data['count']);
+            $('#result'+z).html("");
+            
+            for (var d in data['final']) {
+                var im = document.createElement("img");
+                im.src = '../faces/'+data['final'][d]+'.png';
+                im.title = data['final'][d];
+                document.getElementById('result'+z).appendChild(im);
+            }
+
+            $('#dice'+z).html("");
+            for (var dd in data['dice']) {
+                var name = "";
+
+                switch(data['dice'][dd]) {
+                    case 'b':
+                        name = "blue";
+                        break;
+                    case 'd':
+                        name = "dark";
+                        break;
+                    case 'g':
+                        name = "green";
+                        break;
+                    case 'y':
+                        name = "yellow";
+                        break;
+                    case 'p':
+                        name = "purple";
+                        break;
+                    case 'r':
+                        name = "red";
+                        break;
+                    case 'f':
+                        name = "force";
+                        break;
+                }
+
+                var im = document.createElement("img");
+                im.src = '../dice/'+name+'.png';
+                im.title = name+" dice";
+                document.getElementById('dice'+z).appendChild(im);
+            }
+        },
+        error : function(err) {
+            alert('Oops');
+            console.log(err);
+        }
+      });
+  }
+}
+
+</script>
+{% endblock body_javascript %}

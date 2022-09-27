@@ -22,12 +22,14 @@ if (!playerb.error) {
 
 /** initiate toggle **/
 var player = 'A';
-var autorefresh = false;
+var autorefresh = backcolor = backgrnd = false;
 var LOOP = null;
 
 $(function() {
     $('#activeplayer').bootstrapToggle();
     $('#autorefresh').bootstrapToggle();
+    $('#backcolor').bootstrapToggle();
+    $('#backgrnd').bootstrapToggle();
 
     $('#activeplayer').change(function() {
 		player == 'A' ? player = 'B' : player = 'A';
@@ -36,14 +38,34 @@ $(function() {
     $('#autorefresh').change(function() {
 		updateRefresh();
     });
+	
+	$('#backcolor').change(function() {
+		updateBackground();
+	});
+	
+	$('#backgrnd').change(function() {
+		updateBackLife();
+	});
 });
 
 /** keyboard listener **/
 
 $(document).on('keypress',function(e) {
-   var key = e.keyCode;
+	var key = e.keyCode;
+	console.log(e.which);
+	
+    if(e.which == 46) {//point
+		e.preventDefault();
+		//$('#activeplayer'). ?? how to trigger event
+		return;
+	}
 	
     document.getElementById("lpinteract").focus();
+	
+    if(e.which == 32) {//space
+		e.preventDefault();
+		getLP(ref);
+	}
 	
     if(e.which == 13) { //enter
 	
@@ -89,11 +111,6 @@ $(document).on('keypress',function(e) {
 			$('#lpinteract').val('');
 		}
     }
-	
-    if(e.which == 32) {//space
-		e.preventDefault();
-		getLP(ref);
-	}
 });
 
 function setLP(ref, player, val) {
@@ -133,6 +150,26 @@ function updateRefresh() {
 	} else {
 		autorefresh = true;
 		LOOP = setInterval(getLP, 5000);
+	}
+}
+
+function updateBackground() {
+	if (backcolor) {
+		backcolor = false;
+		document.body.style.backgroundColor = "black";
+	} else {
+		backcolor = true;
+		document.body.style.backgroundColor = "green";
+	}
+}
+
+function updateBackLife() {
+	//document.getElementsByClassName('life').style.backgroundImage = '';
+	
+	if (backgrnd) {
+		backgrnd = false;
+	} else {
+		backgrnd = true;
 	}
 }
 
