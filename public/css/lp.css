@@ -1,0 +1,56 @@
+@font-face {
+	font-family: "Megatron";
+	src: url("/fonts/Megatron.otf");
+}
+body {
+    background-color: green; /*#00FF00;*/
+}
+.life {
+	background-image: url(/img/life.png);
+	background-repeat: no-repeat;
+	max-width: 346px;
+	margin: auto;
+}
+.lifecounter {
+	font-family: "Megatron";
+	font-size: 90px;
+	background-image: linear-gradient(0deg, #AAAAAA, #FFFFFF);
+	background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent; 
+    -moz-text-fill-color: transparent;
+	top: -50px;
+    right: -90px;
+	position: relative;
+}
+.pname {
+	font-family: "Megatron";
+	font-size: 5em;
+	color: white;
+	text-align: center;
+}
+.lps {
+	margin-top: 2em;
+}
+.myCounter {
+	margin: auto;
+	width: 100%;
+}
+.myToggle {
+	float: left;
+	margin: auto;
+}
+#lpinteract {
+	width: 200px;
+}
+.mySearch {
+	float: left;
+	margin-left: 20px;
+}
+.magtop {
+	margin-top: 50px;
+}
+.center {
+	text-align: center;
+}
