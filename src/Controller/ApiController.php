@@ -7,6 +7,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+use App\Entity\YugiLP;
+use App\Entity\User;
+
 /**
  * @Route("/api", name="api_")
  */
@@ -20,7 +23,7 @@ class ApiController extends AbstractController
     {
 		$user = NULL;
 		if (!empty($token)) {
-			$user = $this->getDoctrine()->getRepository(User::class)->findOneByToken($token); //null
+			$user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token); //null
 		}
 		
 		$dd = $dice;
@@ -155,7 +158,7 @@ class ApiController extends AbstractController
             }
         }
         
-        if (!is_null($user)) {
+        /*if (!is_null($user)) {
             $c = $user->getCount()+1;
             $user->setCount($c);
             $user->setResult($val);
@@ -163,7 +166,7 @@ class ApiController extends AbstractController
 
             $ret["count"] = $c;
             $em->flush();
-        }
+        }*/
         
         return new JsonResponse($ret);
     }
@@ -190,5 +193,53 @@ class ApiController extends AbstractController
         }
         
         return new JsonResponse($resp);
+    }
+	
+	/**
+     * @Route("/yugilp/{ref}/{player}/{life}", methods={"POST"})
+     */
+    public function updateLP(string $ref, string $player, int $life): Response
+    {
+		$lp = $this->getDoctrine()
+			->getRepository(YugiLP::class)
+			->findOneByRef($ref);
+		
+		if ($lp) {
+			switch($player) {
+				case 'A':
+					$lp->setLpa($life);
+					break;
+				
+				case 'B':
+					$lp->setLpb($life);
+					break;
+			}
+			
+			$lp->setDateUpd(new \DateTime());
+			
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($lp);
+			$em->flush();
+			
+			return $this->json(['result' => 'OK']);
+		}
+		
+		return $this->json(['result' => 'KO', 'description' => 'Bad reference'], 404);
+    }
+	
+	/**
+     * @Route("/yugilp/{ref}", methods={"POST"})
+     */
+    public function getLP(string $ref): Response
+    {
+		$lp = $this->getDoctrine()
+			->getRepository(YugiLP::class)
+			->findOneByRef($ref);
+		
+		if ($lp) {
+			return $this->json(['result' => 'OK', 1 => $lp->getLpa(), 2 => $lp->getLpb()]);
+		}
+		
+		return $this->json(['result' => 'KO', 'description' => 'Bad reference'], 404);
     }
 }

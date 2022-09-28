@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
@@ -18,58 +20,54 @@ class User
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=31, unique=true)
+     * @ORM\Column(type="string", length=180, unique=true)
      */
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=31, nullable=true)
+     * @ORM\Column(type="string", length=31, nullable=true, unique=true)
      */
-    private $playername;
+    private $apiToken;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="datetime")
      */
-    private $roles;
+    private $date_add;
 
     /**
-     * @ORM\Column(type="string", length=10, nullable=true)
+     * @ORM\Column(type="datetime")
      */
-    private $token;
+    private $date_upd;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $result;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $dice;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $picture;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $count = 0;
+    public function __construct()
+    {
+		$this->token = $this->createToken();
+		$this->date_add = new \Datetime();
+		$this->date_upd = new \Datetime();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUsername(): ?string
+    /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
+    public function getUsername(): string
     {
-        return $this->username;
+        return (string) $this->username;
     }
 
     public function setUsername(string $username): self
@@ -79,7 +77,39 @@ class User
         return $this;
     }
 
-    public function getPassword(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -91,95 +121,69 @@ class User
         return $this;
     }
 
-    public function getPlayername(): ?string
+    /**
+     * Returning a salt is only needed, if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+    public function getSalt(): ?string
     {
-        return $this->playername;
+        return null;
     }
 
-    public function setPlayername(?string $playername): self
-    {
-        $this->playername = $playername;
-
-        return $this;
-    }
-
-    public function getRoles(): ?string
-    {
-        return $this->roles;
-    }
-
-    public function setRoles(?string $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    public function getToken(): ?string
-    {
-        return $this->token;
-    }
-
-    public function setToken(?string $token): self
-    {
-        $this->token = $token;
-
-        return $this;
-    }
-
-    public function getResult(): ?string
-    {
-        return $this->result;
-    }
-
-    public function setResult(?string $result): self
-    {
-        $this->result = $result;
-
-        return $this;
-    }
-
-    public function getDice(): ?string
-    {
-        return $this->dice;
-    }
-
-    public function setDice(?string $dice): self
-    {
-        $this->dice = $dice;
-
-        return $this;
-    }
-
-    public function getPicture(): ?string
-    {
-        return $this->picture;
-    }
-
-    public function setPicture(?string $picture): self
-    {
-        $this->picture = $picture;
-
-        return $this;
-    }
-
-    public function getCount()
-    {
-        return $this->count;
-    }
-
-    public function setCount(int $count)
-    {
-        $this->count = $count;
-
-        return $this;
-    }
-
-    public function getSalt()
-    {
-    }
-    
+    /**
+     * @see UserInterface
+     */
     public function eraseCredentials()
     {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+	public function __toString() {
+         		return $this->getUsername();
+         	}
+
+    public function getApiToken(): ?string
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(?string $apiToken): self
+    {
+        $this->apiToken = $apiToken;
+
+        return $this;
+    }
+	
+	public function createToken() {
+		$token = random_int(0, 9999999999999999999999999999999);
+		
+		$this->apiToken = str_pad($token, 31, "0", STR_PAD_LEFT);
+	}
+
+    public function getDateAdd(): ?\DateTimeInterface
+    {
+        return $this->date_add;
+    }
+
+    public function setDateAdd(\DateTimeInterface $date_add): self
+    {
+        $this->date_add = $date_add;
+
+        return $this;
+    }
+
+    public function getDateUpd(): ?\DateTimeInterface
+    {
+        return $this->date_upd;
+    }
+
+    public function setDateUpd(\DateTimeInterface $date_upd): self
+    {
+        $this->date_upd = $date_upd;
+
+        return $this;
     }
 }

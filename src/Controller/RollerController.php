@@ -28,10 +28,10 @@ class RollerController extends AbstractController
     public function boardAction()
     {
         $blue = $dark = $green = $purple = $yellow = $red = $forcedie = 0;
-		$user = NULL;
+		$token = NULL;
 		
 		if (!is_null($this->getUser())) {
-			$user = $this->getUser()->getToken();
+			$token = $this->getUser()->getApiToken();
 		}
         
         return $this->render('eote/board.html.twig',
@@ -44,7 +44,7 @@ class RollerController extends AbstractController
 			'red' => $red,
 			'yellow' => $yellow,
 			'forcedie' => $forcedie,
-			'token' => $user,
+			'token' => $token,
 		]);
     }
     
@@ -55,6 +55,6 @@ class RollerController extends AbstractController
     {
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
 
-		return $this->render('eote/viewer.html.twig', ["users" => $users]);
+	return $this->render('eote/viewer.html.twig', ["users" => $users]);
     }
 }
