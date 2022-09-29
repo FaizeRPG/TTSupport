@@ -56,9 +56,9 @@ class JdrPlayer
     private $owner;
 
     /**
-     * @ORM\OneToMany(targetEntity=Jdr::class, mappedBy="players")
+     * @ORM\ManyToOne(targetEntity=Jdr::class, inversedBy="jdrPlayers")
      */
-    private $jdrs;
+    private $jdr;
 
     /**
      * @ORM\Column(type="datetime")
@@ -70,13 +70,23 @@ class JdrPlayer
      */
     private $date_upd;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isActive;
+
     public function __construct()
     {
-        $this->jdrs = new ArrayCollection();
+		$this->diceCount = 0;
+		$this->isActive = TRUE;
 		$this->token = $this->createToken();
 		$this->date_add = new \Datetime();
 		$this->date_upd = new \Datetime();
     }
+	
+	public function __toString() {
+         		return $this->getName();
+         	}
 
     public function getId(): ?int
     {
@@ -156,11 +166,11 @@ class JdrPlayer
     }
 	
 	public function createToken() {
-		$token = random_bytes(15);
-		$token = base64_encode($token);
-		
-		$this->apiToken = substr($token, 0, 31);
-	}
+         		$token = random_bytes(15);
+         		$token = base64_encode($token);
+         		
+         		$this->apiToken = substr($token, 0, 31);
+         	}
 
     public function getResult()
     {
@@ -174,32 +184,14 @@ class JdrPlayer
         return $this;
     }
 
-    /**
-     * @return Collection<int, Jdr>
-     */
-    public function getJdrs(): Collection
+    public function getJdr(): ?Jdr
     {
-        return $this->jdrs;
+        return $this->jdr;
     }
 
-    public function addJdr(Jdr $jdr): self
+    public function setJdr(?Jdr $jdr): self
     {
-        if (!$this->jdrs->contains($jdr)) {
-            $this->jdrs[] = $jdr;
-            $jdr->setPlayers($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJdr(Jdr $jdr): self
-    {
-        if ($this->jdrs->removeElement($jdr)) {
-            // set the owning side to null (unless already changed)
-            if ($jdr->getPlayers() === $this) {
-                $jdr->setPlayers(null);
-            }
-        }
+        $this->jdr = $jdr;
 
         return $this;
     }
@@ -224,6 +216,18 @@ class JdrPlayer
     public function setDateUpd(\DateTimeInterface $date_upd): self
     {
         $this->date_upd = $date_upd;
+
+        return $this;
+    }
+
+    public function isIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

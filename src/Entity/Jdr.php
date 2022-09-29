@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\JdrRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,11 +31,6 @@ class Jdr
     private $admin;
 
     /**
-     * @ORM\ManyToOne(targetEntity=JdrPlayer::class, inversedBy="jdrs")
-     */
-    private $players;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $date_add;
@@ -43,11 +40,21 @@ class Jdr
      */
     private $date_upd;
 
+    /**
+     * @ORM\OneToMany(targetEntity=JdrPlayer::class, mappedBy="jdr")
+     */
+    private $jdrPlayers;
+
     public function __construct()
     {
 		$this->date_add = new \Datetime();
 		$this->date_upd = new \Datetime();
+		$this->jdrPlayers = new ArrayCollection();
     }
+	
+	public function __toString() {
+		return $this->getName();
+	}
 
     public function getId(): ?int
     {
@@ -78,18 +85,6 @@ class Jdr
         return $this;
     }
 
-    public function getPlayers(): ?JdrPlayer
-    {
-        return $this->players;
-    }
-
-    public function setPlayers(?JdrPlayer $players): self
-    {
-        $this->players = $players;
-
-        return $this;
-    }
-
     public function getDateAdd(): ?\DateTimeInterface
     {
         return $this->date_add;
@@ -110,6 +105,36 @@ class Jdr
     public function setDateUpd(\DateTimeInterface $date_upd): self
     {
         $this->date_upd = $date_upd;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, JdrPlayer>
+     */
+    public function getJdrPlayers(): Collection
+    {
+        return $this->jdrPlayers;
+    }
+
+    public function addJdrPlayer(JdrPlayer $jdrPlayer): self
+    {
+        if (!$this->jdrPlayers->contains($jdrPlayer)) {
+            $this->jdrPlayers[] = $jdrPlayer;
+            $jdrPlayer->setJdr($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJdrPlayer(JdrPlayer $jdrPlayer): self
+    {
+        if ($this->jdrPlayers->removeElement($jdrPlayer)) {
+            // set the owning side to null (unless already changed)
+            if ($jdrPlayer->getJdr() === $this) {
+                $jdrPlayer->setJdr(null);
+            }
+        }
 
         return $this;
     }

@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\YugiLP;
-use App\Entity\User;
+use App\Entity\JdrPlayer;
 
 /**
  * @Route("/api", name="api_")
@@ -21,9 +21,10 @@ class ApiController extends AbstractController
     */
     public function rollAction($dice, $token)
     {
-		$user = NULL;
+		$player = NULL;
 		if (!empty($token)) {
-			$user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token); //null
+            $em = $this->getDoctrine()->getManager();
+			$player = $em->getRepository(JdrPlayer::class)->findOneByToken($token); //null
 		}
 		
 		$dd = $dice;
@@ -158,15 +159,15 @@ class ApiController extends AbstractController
             }
         }
         
-        /*if (!is_null($user)) {
-            $c = $user->getCount()+1;
-            $user->setCount($c);
-            $user->setResult($val);
-			$user->setDice($dd);
+        if (!is_null($player)) {
+            $c = $player->getDiceCount()+1;
+            $player->setDiceCount($c);
+            $player->setResult($val);
+			$player->setDices($dd);
 
             $ret["count"] = $c;
             $em->flush();
-        }*/
+        }
         
         return new JsonResponse($ret);
     }
@@ -180,15 +181,15 @@ class ApiController extends AbstractController
         
         if ($id > 0) {
             $em = $this->getDoctrine()->getManager();
-            $user = $em->getRepository(User::class)->find($id); //null
+            $user = $em->getRepository(JdrPlayer::class)->find($id); //null
             $res = $user->getResult();
             
             if ($res != null) {
                 $result = explode(",", $res);
-                $resp["count"] = $user->getCount();
+                $resp["count"] = $user->getDiceCount();
                 $resp["final"] = $result;
                 $resp["id"] = $id;
-		$resp["dice"] = explode("-", $user->getDice());
+				$resp["dice"] = explode("-", $user->getDices());
             }
         }
         

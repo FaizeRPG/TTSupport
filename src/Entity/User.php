@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -50,11 +52,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $date_upd;
 
+    /**
+     * @ORM\OneToMany(targetEntity=JdrPlayer::class, mappedBy="owner")
+     */
+    private $jdrPlayers;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Jdr::class, mappedBy="admin")
+     */
+    private $jdrs;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isActive;
+
     public function __construct()
     {
 		$this->token = $this->createToken();
 		$this->date_add = new \Datetime();
 		$this->date_upd = new \Datetime();
+		$this->jdrPlayers = new ArrayCollection();
+		$this->jdrs = new ArrayCollection();
+		$this->isActive = TRUE;
     }
 
     public function getId(): ?int
@@ -142,8 +162,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 	public function __toString() {
-         		return $this->getUsername();
-         	}
+                  		return $this->getUsername();
+                  	}
 
     public function getApiToken(): ?string
     {
@@ -158,10 +178,70 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 	
 	public function createToken() {
-		$token = random_int(0, 9999999999999999999999999999999);
-		
-		$this->apiToken = str_pad($token, 31, "0", STR_PAD_LEFT);
-	}
+         		$token = random_int(0, 999999999999999);
+         		
+         		$this->apiToken = str_pad($token, 31, "0", STR_PAD_LEFT);
+         	}
+	
+    /**
+     * @return Collection<int, JdrPlayer>
+     */
+    public function getJdrPlayers(): Collection
+    {
+        return $this->jdrPlayers;
+    }
+
+    public function addJdrPlayer(JdrPlayer $jdrPlayer): self
+    {
+        if (!$this->jdrPlayers->contains($jdrPlayer)) {
+            $this->jdrPlayers[] = $jdrPlayer;
+            $jdrPlayer->setJdr($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJdrPlayer(JdrPlayer $jdrPlayer): self
+    {
+        if ($this->jdrPlayers->removeElement($jdrPlayer)) {
+            // set the owning side to null (unless already changed)
+            if ($jdrPlayer->getJdr() === $this) {
+                $jdrPlayer->setJdr(null);
+            }
+        }
+
+        return $this;
+    }
+	
+    /**
+     * @return Collection<int, Jdr>
+     */
+    public function getJdrs(): Collection
+    {
+        return $this->jdrs;
+    }
+
+    public function addJdrs(Jdr $jdrs): self
+    {
+        if (!$this->jdrs->contains($jdrs)) {
+            $this->jdrs[] = $jdrs;
+            $jdrs->setJdr($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJdrs(Jdr $jdrs): self
+    {
+        if ($this->jdrs->removeElement($jdrs)) {
+            // set the owning side to null (unless already changed)
+            if ($jdrs->getJdr() === $this) {
+                $jdrs->setJdr(null);
+            }
+        }
+
+        return $this;
+    }
 
     public function getDateAdd(): ?\DateTimeInterface
     {
@@ -183,6 +263,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateUpd(\DateTimeInterface $date_upd): self
     {
         $this->date_upd = $date_upd;
+
+        return $this;
+    }
+
+    public function isIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

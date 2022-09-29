@@ -1,4 +1,4 @@
-{% extends '@EasyAdmin/default/layout.html.twig' %}
+{% extends '@EasyAdmin/layout.html.twig' %}
 {% block head_stylesheets %}
     {{ parent() }}
     <style type="text/css">
@@ -10,6 +10,7 @@
         .myellow {background-color: #ffff4d;}
         .mred {background-color: #ff4d4d;}
         .dice {margin: 3px; padding: 8px;}
+		.diceDisplay img {width: 30px;}
     </style>
 {% endblock %}
  
@@ -19,18 +20,18 @@
 <button class='btn btn-danger' onclick='run()' id='runner'>Start</button>
 <br/><br/>
 <table style="width:100%">
-  {% for key, user in users %}
-  <tr id="{{ user.username }}" style="border: solid 10px white;">
+  {% for key, player in players %}
+  <tr id="{{ player.name }}" style="border: solid 10px white;">
     <td style="width: 250px;">
-      <img src="{{ user.pic }}" style="max-width: 200px; max-height: 150px; display: block; margin-left: auto; margin-right: auto;" />
+      <img src="{{ player.picture }}" style="max-width: 200px; max-height: 150px; display: block; margin-left: auto; margin-right: auto;" />
     </td>
     <td>
-        <h4>{{ user.playername }} ({{ user.username|capitalize }})</h4>
-        <div>Nb Roll: <span id="nbroll{{ user.id }}">{{ user.count }}</span></div>
+        <h4>{{ player.name }} ({{ player.owner.username|capitalize }})</h4>
+        <div>Nb Roll: <span id="nbroll{{ player.id }}">{{ player.diceCount }}</span></div>
         <div>Result: </div>
-        <div id="result{{ user.id }}"></div>
+        <div id="result{{ player.id }}"></div>
         <div>Dice: </div>
-        <div id="dice{{ user.id }}"></div>
+        <div id="dice{{ player.id }}" class="diceDisplay"></div>
     </td>
     </tr>
 {% endfor %}
@@ -38,20 +39,11 @@
 {% endblock %}
 
 {% block body_javascript %}
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-62527606-2"></script>
-<script>
-   window.dataLayer = window.dataLayer || [];
-   function gtag(){dataLayer.push(arguments);}
-   gtag('js', new Date());
-
-   gtag('config', 'UA-62527606-2');
-</script>
-
+<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
 
 <script type='text/javascript'>
 var runner = false;
-var users = [{% for key, user in users %}{{ user.id }},{% endfor %}];
+var players = [{% for key, player in players %}{{ player.id }},{% endfor %}];
 
 function run() {
     if (runner == false) {
@@ -66,8 +58,8 @@ function run() {
 
 function myMethod()
 {
-  for (a in users) {
-      var id = users[a];
+  for (a in players) {
+      var id = players[a];
       var uri = '../api/result/'+id;
 
       $.ajax({
@@ -81,7 +73,7 @@ function myMethod()
             
             for (var d in data['final']) {
                 var im = document.createElement("img");
-                im.src = '../faces/'+data['final'][d]+'.png';
+                im.src = '/img/faces/'+data['final'][d]+'.png';
                 im.title = data['final'][d];
                 document.getElementById('result'+z).appendChild(im);
             }
@@ -115,7 +107,7 @@ function myMethod()
                 }
 
                 var im = document.createElement("img");
-                im.src = '../dice/'+name+'.png';
+                im.src = '/img/dice/'+name+'.png';
                 im.title = name+" dice";
                 document.getElementById('dice'+z).appendChild(im);
             }

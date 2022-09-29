@@ -2,14 +2,28 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+//use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 
-class DefaultController extends AbstractController
+use Symfony\Component\Security\Core\Security;
+
+use App\Entity\User;
+use App\Entity\Jdr;
+use App\Entity\JdrPlayer;
+
+class DefaultController extends AbstractDashboardController
 {
+	private $security;
+
+	public function __construct(Security $security)
+	{
+		$this->security = $security;
+	}
+	
     /**
     * @Route("/", name="homepage")
     */
@@ -22,6 +36,33 @@ class DefaultController extends AbstractController
 				'Yu-Gi-Oh! Life' => $this->generateUrl('yugi_lp_ref', ['ref' => "demo"]),
 			]
         ]);
+    }
+	
+    public function configureMenuItems(): iterable
+    {
+        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+		
+        if ($this->security->isGranted('ROLE_USER')) {
+			yield MenuItem::linkToLogout('Logout', 'fas fa-power-off');
+		} else {
+			yield MenuItem::linkToRoute('Login', 'fas fa-power-off', 'app_login');
+		}
+		
+		yield MenuItem::section('Admin', '')->setPermission("ROLE_ADMIN");
+		yield MenuItem::linkToCrud('Users', 'fas fa-pen', User::class)->setPermission("ROLE_ADMIN");
+		
+        yield MenuItem::section('Jdr', '');
+		yield MenuItem::linkToCrud('Jdr Game', 'fas fa-pen', Jdr::class)->setPermission("ROLE_ADMIN");
+		yield MenuItem::linkToCrud('Jdr Players', 'fas fa-pen', JdrPlayer::class)->setPermission("ROLE_ADMIN");
+		yield MenuItem::linkToRoute('Roll Dashboard', 'fas fa-link', 'roll_dashboard')->setPermission("ROLE_USER");
+		yield MenuItem::linkToRoute('Dice roller', 'fas fa-link', 'roll_board');
+		yield MenuItem::linkToRoute('Roll Viewer', 'fas fa-link', 'roll_viewer')->setPermission("ROLE_USER");
+		
+        yield MenuItem::section('Bloodbowl', '');
+        yield MenuItem::linkToRoute('Timer', 'fas fa-link', 'app_bloodbowl_bb');
+		
+        yield MenuItem::section('Yu-Gi-Oh!', '');
+        yield MenuItem::linkToRoute('Life counter', 'fas fa-link', 'yugi_lp');
     }
     
     /**

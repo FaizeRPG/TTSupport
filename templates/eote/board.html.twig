@@ -1,6 +1,6 @@
-{% extends 'base.html.twig' %}
+{% extends '@EasyAdmin/layout.html.twig' %}
 
-{% block stylesheets %}
+{% block head_stylesheets %}
 	<link rel="stylesheet" href="{{ asset('/css/bootstrap.min.css') }}" />
     <style type="text/css">
         .fadded { opacity: 0.4;}
@@ -12,9 +12,10 @@
         .mred {background-color: #ff4d4d;}
         .dice {margin: 3px; padding: 8px;}
     </style>
+	{{ parent() }}
 {% endblock %}
  
-{% block body %}
+{% block main %}
   {% for dice in dicelist %}
       {% for color in dice %}
         {% for j in 0..4 %}
@@ -47,7 +48,7 @@
 <div id="final"></div>
 {% endblock %}
 
-{% block javascripts %}
+{% block body_javascript %}
 <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
 <script type='text/javascript'>
     var blue = 0;
