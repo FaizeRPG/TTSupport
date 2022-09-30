@@ -22,7 +22,8 @@
         "symfony/runtime": "5.4.*",
         "symfony/security-bundle": "^5.4",
         "symfony/twig-bundle": "5.4.*",
-        "symfony/yaml": "5.4.*"
+        "symfony/yaml": "5.4.*",
+        "twig/twig": "3.4.3"
     },
     "config": {
         "optimize-autoloader": true,

@@ -27,7 +27,7 @@ class RollerController extends AbstractDashboardController// AbstractController
 	}
 
     /**
-    * @Route("/", name="board")
+    * @Route("", name="board")
     */
     public function boardAction()
     {
@@ -53,7 +53,7 @@ class RollerController extends AbstractDashboardController// AbstractController
     }
 	
    /**
-    * @Route("/admin/dashboard", name="dashboard")
+    * @Route("/dashboard", name="dashboard")
     */
     public function dashboardAction()
     {
@@ -76,7 +76,7 @@ class RollerController extends AbstractDashboardController// AbstractController
     }
     
     /**
-    * @Route("/admin/viewer", name="viewer")
+    * @Route("/viewer", name="viewer")
     */
     public function rollViewerdAction()
     {
