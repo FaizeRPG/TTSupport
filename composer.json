@@ -33,7 +33,11 @@
         "sort-packages": true,
 	"platform": {
 	    "php": "7.4"
-	}
+	},
+        "allow-plugins": {
+            "symfony/flex": true,
+            "symfony/runtime": true
+        }
     },
     "autoload": {
         "psr-4": {
