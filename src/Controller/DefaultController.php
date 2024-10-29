@@ -11,6 +11,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 
 use Symfony\Component\Security\Core\Security;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 use App\Entity\User;
 use App\Entity\Jdr;
 use App\Entity\JdrPlayer;
@@ -68,7 +71,7 @@ class DefaultController extends AbstractDashboardController
     /**
     * @Route("/create", name="create")
     */
-    public function createAction()
+    public function createAction(UserPasswordHasherInterface $passwordHasher)
     {
 /*
         $em = $this->getDoctrine()->getManager();
@@ -76,9 +79,12 @@ class DefaultController extends AbstractDashboardController
         $user = new User();
         $user->setUsername("erwan");
             
-        $encoder = $this->get('security.password_encoder');
-        $encoded = $encoder->encodePassword($user, "plop123");
-        $user->setPassword($encoded);
+	$plaintextPassword = "plop123";
+        $hashedPassword = $passwordHasher->hashPassword(
+            $user,
+            $plaintextPassword
+        );
+        $user->setPassword($hashedPassword);
         $user->setRoles(["ROLE_ADMIN"]);
 
         $em->persist($user);
