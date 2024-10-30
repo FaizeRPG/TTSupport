@@ -1,7 +1,7 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 
 {% block head_stylesheets %}
-	<link rel="stylesheet" href="{{ asset('/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/css/bootstrap.min.css') }}" />
     <style type="text/css">
         .fadded { opacity: 0.4;}
         .mblue {background-color: #cceeff;}
@@ -41,7 +41,7 @@
 
 <br/>
 <br/>
-<label for="dice"><b>Face obtenu sur les dés:</b></label>
+<label for="dice" style="margin-bottom:1em;"><b>Faces obtenus sur les dés:</b></label>
 <div id="dice"></div>
 <br/>
 <label for="final"><b>Résultat:</b></label>
@@ -188,15 +188,15 @@
         fo--;
       }
 	  
-	  //si aucun de saisie un vert et un violet
-	  if (elem === '') {
-		  elem = 'g-p';
-	  }
+      //si aucun de saisie un vert et un violet
+      if (elem === '') {
+	  elem = 'g-p';
+      }
 
       var uri = '/api/roll/'+elem;
       var res = '';
       
-	  if (token != '') {
+      if (token != '') {
         uri += '/'+token;
       }
       
@@ -208,13 +208,13 @@
             var res = '';
             
             if (typeof data['final'] !== 'undefined') {
-				for (var i = 0; i < data['final'].length; ++i) {
-					res += data['final'][i];
+		for (var i = 0; i < data['final'].length; ++i) {
+		  res += data['final'][i];
             }}
             
             if (typeof data['force'] !== 'undefined') {
-				for (var i = 0; i < data['force'].length; ++i) {
-					res += data['force'][i];
+		for (var i = 0; i < data['force'].length; ++i) {
+		  res += data['force'][i];
             }}
             
             $('#final').html(res);
@@ -257,6 +257,8 @@
                             im = document.createElement("IMG");
                             im.src = '/img/faces/'+name+'.png';
                             im.title = name;
+			    im.style.maxHeight = "30px";
+			    im.style.marginBottom = "3px";
                             span.appendChild(im);
                         }
                     }

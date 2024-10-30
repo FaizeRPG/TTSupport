@@ -21,13 +21,14 @@ class ApiController extends AbstractController
     */
     public function rollAction($dice, $token)
     {
-		$player = NULL;
-		if (!empty($token)) {
-            $em = $this->getDoctrine()->getManager();
-			$player = $em->getRepository(JdrPlayer::class)->findOneByToken($token); //null
-		}
-		
-		$dd = $dice;
+	$player = null;
+
+	if (!empty($token)) {
+           $em = $this->getDoctrine()->getManager();
+           $player = $em->getRepository(JdrPlayer::class)->findOneByToken($token); //null
+	}
+
+	$dd = $dice;
         $dice = explode('-', $dice);
         $ret = ['final' => []];
 
@@ -93,7 +94,7 @@ class ApiController extends AbstractController
                         $f = $forcedice[$rand];
                     break;
             }
-            
+
             $ret['dice'][$d][] = $r;
 
             if ($r) {
@@ -107,11 +108,11 @@ class ApiController extends AbstractController
                $f = explode(',', $f);
                foreach($f as $t) {
                    $force[$t]++;
-               }    
+               }
             }
 
             $r = false;
-            $f = false;    
+            $f = false;
         }
 
         /* DIFF RES */
@@ -135,7 +136,7 @@ class ApiController extends AbstractController
         $val = "";
         foreach($result as $a => $b) {
             while($b > 0) {
-               $ret["final"][] = "<img src='/img/faces/".$a.".png' />";
+               $ret["final"][] = "<img src='/img/faces/".$a.".png' style='max-height:30px;' />";
                $b--;
 
                if ($val === "") {
@@ -148,7 +149,7 @@ class ApiController extends AbstractController
 
         foreach($force as $a => $b) {
             while($b > 0) {
-                $ret["force"][] = "<img src='/img/faces/".$a.".png' />";
+                $ret["force"][] = "<img src='/img/faces/".$a.".png' style='max-height:30px;' />";
                 $b--;
 
                if ($val === "") {
@@ -158,32 +159,32 @@ class ApiController extends AbstractController
                }
             }
         }
-        
+
         if (!is_null($player)) {
             $c = $player->getDiceCount()+1;
             $player->setDiceCount($c);
             $player->setResult($val);
-			$player->setDices($dd);
+	    $player->setDices($dd);
 
             $ret["count"] = $c;
             $em->flush();
         }
-        
+
         return new JsonResponse($ret);
     }
-    
+
     /**
     * @Route("/result/{id}", name="result", requirements={"id" = "\d+"}, defaults={"id" = 0})
     */
     public function resultAction($id)
     {
         $resp = [];
-        
+
         if ($id > 0) {
             $em = $this->getDoctrine()->getManager();
             $user = $em->getRepository(JdrPlayer::class)->find($id); //null
             $res = $user->getResult();
-            
+
             if ($res != null) {
                 $result = explode(",", $res);
                 $resp["count"] = $user->getDiceCount();
@@ -192,11 +193,11 @@ class ApiController extends AbstractController
 				$resp["dice"] = explode("-", $user->getDices());
             }
         }
-        
+
         return new JsonResponse($resp);
     }
-	
-	/**
+
+    /**
      * @Route("/yugilp/{ref}/{player}/{life}", methods={"POST"})
      */
     public function updateLP(string $ref, string $player, int $life): Response

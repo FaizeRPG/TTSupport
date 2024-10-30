@@ -10,19 +10,19 @@
 <div>Dernier jet:
   {% for key, die in dice %}
 	{% if die == "b" %}
-	   <img src="/img/dice/blue.png" title="blue" />
+	   <img src="/img/dice/blue.png" style="max-height:40px;" title="blue" />
 	{% elseif die == "d" %}
-	   <img src="/img/dice/dark.png" title="dark" />
+	   <img src="/img/dice/dark.png" style="max-height:40px;" title="dark" />
 	{% elseif die == "g" %}
-	   <img src="/img/dice/green.png" title="green" />
+	   <img src="/img/dice/green.png" style="max-height:40px;" title="green" />
 	{% elseif die == "y" %}
-	   <img src="/img/dice/yellow.png" title="yellow" />
+	   <img src="/img/dice/yellow.png" style="max-height:40px;" title="yellow" />
 	{% elseif die == "p" %}
-	   <img src="/img/dice/purple.png" title="purple" />
+	   <img src="/img/dice/purple.png" style="max-height:40px;" title="purple" />
 	{% elseif die == "r" %}
-	   <img src="/img/dice/red.png" title="red" />
+	   <img src="/img/dice/red.png" style="max-height:40px;" title="red" />
 	{% elseif die == "f" %}
-	   <img src="/img/dice/force.png" title="force" />
+	   <img src="/img/dice/force.png" style="max-height:40px;" title="force" />
 	{% endif %}
   {% endfor %}
 </div>
@@ -30,7 +30,7 @@
 
 <div>Résultat obtenu:
   {% for key, r in res %}
-    <img src="/img/faces/{{ r }}.png" title="{{ r }}" />
+    <img src="/img/faces/{{ r }}.png" style="max-height:40px;" title="{{ r }}" />
   {% endfor %}
 </div>
 </br>

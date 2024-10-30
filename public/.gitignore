@@ -1,4 +1,6 @@
 /img/*
+!/img/faces
+!/img/dice
 /sounds/*
 /fonts/*
 /bundles

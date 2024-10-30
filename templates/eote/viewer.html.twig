@@ -75,6 +75,7 @@ function myMethod()
                 var im = document.createElement("img");
                 im.src = '/img/faces/'+data['final'][d]+'.png';
                 im.title = data['final'][d];
+		im.style.maxHeight = "30px";
                 document.getElementById('result'+z).appendChild(im);
             }
 
@@ -109,6 +110,7 @@ function myMethod()
                 var im = document.createElement("img");
                 im.src = '/img/dice/'+name+'.png';
                 im.title = name+" dice";
+		im.style.maxHeight = "30px"
                 document.getElementById('dice'+z).appendChild(im);
             }
         },
